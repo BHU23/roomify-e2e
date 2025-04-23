@@ -18,5 +18,5 @@ test('successful sign out', async ({ page }) => {
     await page.getByTestId('nav-sign-out-btn').click()
     await expect(page.getByTestId('flash-notice')).toBeVisible()
     await expect(page.getByTestId('flash-message')).toHaveText('Signed out successfully.')
-    await expect(page).toHaveURL('/users/sign_in')
+    await expect(page).toHaveURL('/')
 }) 
