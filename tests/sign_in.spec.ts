@@ -1,0 +1,61 @@
+import { test, expect } from '@playwright/test'
+
+test('invalid credentials sign in', async ({ page }) => {
+  await page.goto('/users/sign_in')
+  await page.getByTestId('email-input').fill('notfound@odds.team')
+  await page.getByTestId('password-input').fill('BN8qJmeCuCg2zhx#')
+  await page.getByTestId('login-button').click()
+  await expect(page.getByTestId('flash-alert')).toBeVisible()
+  await expect(page.getByTestId('flash-message')).toHaveText('Invalid Email or password.')
+  await expect(page.getByTestId('password-input')).toHaveValue('')
+})
+
+test('invalid email format', async ({ page }) => {
+  await page.goto('/users/sign_in')
+  await page.getByTestId('email-input').fill('email.invalidFormat')
+  await page.getByTestId('password-input').fill('BN8qJmeCuCg2zhx#')
+  await expect(page).toHaveURL('/users/sign_in')
+})
+
+test('invalid password sign in', async ({ page }) => {
+  await page.goto('/users/sign_in')
+  await page.getByTestId('email-input').fill('somsak@odds.team')
+  await page.getByTestId('password-input').fill('invalid password')
+  await page.getByTestId('login-button').click()
+  await expect(page.getByTestId('flash-alert')).toBeVisible()
+  await expect(page.getByTestId('flash-message')).toHaveText('Invalid Email or password.')
+  await expect(page.getByTestId('password-input')).toHaveValue('')
+})
+
+test('admin sign in', async ({ page }) => {
+  await page.goto('/users/sign_in')
+  await page.getByTestId('email-input').fill('admin01@odds.team')
+  await page.getByTestId('password-input').fill('Hf3tV4grPv93@uz')
+  await page.getByTestId('login-button').click()
+  await expect(page.getByTestId('flash-notice')).toBeVisible()
+  await expect(page.getByTestId('flash-message')).toHaveText('Signed in successfully.')
+  await expect(page).toHaveURL('/')
+  await expect(page.getByTestId('navigation-header')).toBeVisible()
+  await expect(page.getByTestId('nav-rooms-page')).toHaveText('Room Management')
+  await expect(page.getByTestId('nav-reservations-page')).toHaveText('Reservations Management')
+  await page.getByTestId('nav-avatar').click()
+  await expect(page.getByTestId('nav-my-management-btn')).toHaveCount(2)
+  await expect(page.getByTestId('nav-my-account-btn')).toBeVisible()
+  await expect(page.getByTestId('nav-sign-out-btn')).toBeVisible()
+})
+
+test('user sign in', async ({ page }) => {
+  await page.goto('/users/sign_in')
+  await page.getByTestId('email-input').fill('somsak@odds.team')
+  await page.getByTestId('password-input').fill('BN8qJmeCuCg2zhx#')
+  await page.getByTestId('login-button').click()
+  await expect(page.getByTestId('flash-notice')).toBeVisible()
+  await expect(page.getByTestId('flash-message')).toHaveText('Signed in successfully.')
+  await expect(page).toHaveURL('/')
+  await expect(page.getByTestId('navigation-header')).toBeVisible()
+  await expect(page.getByTestId('nav-rooms-page')).toHaveText('Room')
+  await expect(page.getByTestId('nav-reservations-page')).toHaveText('Reservations')
+  await page.getByTestId('nav-avatar').click()
+  await expect(page.getByTestId('nav-my-account-btn')).toBeVisible()
+  await expect(page.getByTestId('nav-sign-out-btn')).toBeVisible()
+})
