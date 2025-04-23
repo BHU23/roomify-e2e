@@ -1,0 +1,22 @@
+import { test, expect } from '@playwright/test'
+
+test('successful sign out', async ({ page }) => {
+    await page.goto('/users/sign_in')
+    await page.getByTestId('email-input').fill('admin01@odds.team')
+    await page.getByTestId('password-input').fill('Hf3tV4grPv93@uz')
+    await page.getByTestId('login-button').click()
+    await expect(page.getByTestId('flash-notice')).toBeVisible()
+    await expect(page.getByTestId('flash-message')).toHaveText('Signed in successfully.')
+    await expect(page).toHaveURL('/')
+    await expect(page.getByTestId('navigation-header')).toBeVisible()
+    await expect(page.getByTestId('nav-rooms-page')).toHaveText('Room Management')
+    await expect(page.getByTestId('nav-reservations-page')).toHaveText('Reservations Management')
+    await page.getByTestId('nav-avatar').click()
+    await expect(page.getByTestId('nav-my-management-btn')).toHaveCount(2)
+    await expect(page.getByTestId('nav-my-account-btn')).toBeVisible()
+    await expect(page.getByTestId('nav-sign-out-btn')).toBeVisible()
+    await page.getByTestId('nav-sign-out-btn').click()
+    await expect(page.getByTestId('flash-notice')).toBeVisible()
+    await expect(page.getByTestId('flash-message')).toHaveText('Signed out successfully.')
+    await expect(page).toHaveURL('/users/sign_in')
+}) 
